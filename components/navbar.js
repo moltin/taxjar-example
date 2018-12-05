@@ -1,8 +1,16 @@
 import React, { Component } from 'react'
 import Link from 'next/link'
 
+import { connect } from 'react-redux'
+
 class Navbar extends Component {
+  state = {
+    productsCount: 0,
+  }
+
   render() {
+    const { productsCount } = this.props
+
     return <div className="navbar navbar-expand-md navbar-dark bg-dark">
       <Link href="/">
         <a className="navbar-brand">
@@ -16,6 +24,7 @@ class Navbar extends Component {
             <Link href="/products">
               <a className="nav-link">
                 Products
+                ({productsCount})
               </a>
             </Link>
           </li>
@@ -36,4 +45,5 @@ class Navbar extends Component {
   }
 }
 
-export default Navbar
+const mapStateToProps = (state) => ({ productsCount: state.products.length })
+export default connect(mapStateToProps)(Navbar)
