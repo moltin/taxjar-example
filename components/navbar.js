@@ -25,17 +25,6 @@ class Navbar extends Component {
       </Link>
 
       <div className="navbar-collapse collapse">
-        <ul className="navbar-nav mr-auto">
-          <li className="nav-item">
-            <Link href="/products">
-              <a className="nav-link">
-                Products
-                ({productsCount})
-              </a>
-            </Link>
-          </li>
-        </ul>
-
         <ul className="navbar-nav">
           <li className="nav-item">
             <Link href="/cart">

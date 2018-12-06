@@ -200,3 +200,11 @@ curl -X POST https://api.moltin.com/v2/products \
         }
     }'
 ```
+
+## Running the demo site
+
+The demonstration site is a basic webpage built using React and bootstrap. To run it locally, clone this repo and run:
+
+```bash
+npm install && npm run-script dev
+```
