@@ -26,7 +26,16 @@ export const reducer = (state = initialState, action) => {
 }
 
 export const loadProducts = () => async (dispatch) => {
-  const products = await client.get('products')
+  const products = await client.get('products?include=main_images')
+
+  products.data.map(product => {
+    products.included.main_images.map(image => {
+      if (image.id == product.relationships.main_image.data.id) {
+        product.main_image = image
+      }
+    })
+  })
+
   dispatch(setProducts(products.data))
 }
 

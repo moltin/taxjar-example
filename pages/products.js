@@ -13,12 +13,8 @@ class ProductsPage extends Component {
     const { products } = this.props
 
     return <div>
-      <h1>i am have {products.length} products</h1>
-
-      <div className="row">
-        {products.map(product => <div className="col-3" key={product.id}>
-          <Product {...product}/>
-        </div>)}
+      <div className="card-deck">
+        {products.map(product => <Product {...product}/>)}
       </div>
     </div>
   }
