@@ -1,11 +1,16 @@
 import React, { Component } from 'react'
 import Link from 'next/link'
-
 import { connect } from 'react-redux'
+
+import { loadProducts } from '../store'
 
 class Navbar extends Component {
   state = {
     productsCount: 0,
+  }
+
+  componentDidMount() {
+    this.props.dispatch(loadProducts())
   }
 
   render() {

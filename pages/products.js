@@ -5,10 +5,6 @@ import { loadProducts } from '../store'
 import Product from '../components/product'
 
 class ProductsPage extends Component {
-  componentDidMount() {
-    this.props.dispatch(loadProducts())
-  }
-
   render() {
     const { products } = this.props
 
