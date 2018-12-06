@@ -12,7 +12,7 @@ class Navbar extends Component {
     const { productsCount } = this.props
 
     return <div className="navbar navbar-expand-md navbar-dark bg-dark">
-      <div class="container d-flex justify-content-between">
+      <div className="container d-flex justify-content-between">
       <Link href="/">
         <a className="navbar-brand">
           Winter Wonderland
