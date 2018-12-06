@@ -22,9 +22,32 @@ In this demonstration, we will use selling in New York City as an example. Accor
 
  > There is no sales tax on an item of clothing or footwear that costs less than $110. An item of clothing or footwear that costs $110 or more is subject to the full 8.875% tax rate. Sales tax is calculated per item, so even if you buy two or more items that add up to $110 or more, you only pay tax on the items that individually cost $110 or more.
 
-TaxJar's API has [an endpoint](https://developers.taxjar.com/api/reference/?javascript#categories) that describes different tax categories. As tax can different based on the _type_ of product you are selling, the categories from that endpoint need to be married with the product stored in Moltin.
+### Tax Codes
+
+TaxJars API has [an endpoint](https://developers.taxjar.com/api/reference/?javascript#categories) that describes different tax categories. As tax can different based on the _type_ of product you are selling, the categories from that endpoint need to be married with the product stored in Moltin.
 
 To do this, we will create [custom data](https://docs.moltin.com/advanced/custom-data) for our products which allows us to add additional fields to our products and store the TaxJar Category code so that when adding products to Moltin, you can be explicit about the tax that should be applied.
+
+### Nexus
+
+TaxJars API has [and enpoint](https://developers.taxjar.com/api/reference/?javascript#nexus) that returns nexus information. `Nexus` is a legal term for a geographical region that you sell products in. For this example, we will be selling clothing to New York so the Nexus will be New York (as represented below from TaxJar).
+
+```json
+{
+  "regions": [
+    ...
+    {
+      "country_code": "US",
+      "country": "United States",
+      "region_code": "NY",
+      "region": "New York"
+    },
+    ...
+  ]
+}}
+```
+
+### Setup
 
 So, we need two products - one that costs < $100 and one that costs >= $100. Both of them should have the same tax code - `20010` ("Clothing"). You can add these products to your Moltin store via the [dashboard](https://dashboard.moltin.com/) or via the API.
 
