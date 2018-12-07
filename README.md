@@ -206,7 +206,8 @@ curl -X POST https://api.moltin.com/v2/products \
 The demonstration site is a basic webpage built using React and bootstrap. To run it locally, clone this repo and run:
 
 ```bash
-npm install && npm run-script dev
+yarn install
+yarn dev
 ```
 
 This will start the server locally on [localhost:3000](http://localhost:3000/).
