@@ -208,3 +208,5 @@ The demonstration site is a basic webpage built using React and bootstrap. To ru
 ```bash
 npm install && npm run-script dev
 ```
+
+This will start the server locally on [localhost:3000](http://localhost:3000/).
