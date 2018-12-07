@@ -1,6 +1,7 @@
 {
   "extends": [
     "@moltin",
-    "@moltin/eslint-config/rules/react"
+    "@moltin/eslint-config/rules/react",
+    "@moltin/eslint-config/rules/react-a11y"
   ]
 }
