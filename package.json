@@ -9,7 +9,7 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint --ext .jsx ."
+    "lint": "eslint --ext js,jsx ."
   },
   "dependencies": {
     "@moltin/request": "^1.4.1",
