@@ -1,0 +1,6 @@
+{
+  "extends": [
+    "@moltin",
+    "@moltin/eslint-config/rules/react"
+  ]
+}
