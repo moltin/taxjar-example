@@ -11,14 +11,15 @@ class Product extends Component {
   }
 
   async addToCart() {
+    const { cartId } = this.props
 
-    let items = await client.post(`carts/abc/items`, { // todo `abc` needs to come from redux
+    let { data } = await client.post(`carts/${cartId}/items`, {
       id: this.props.id,
       type: 'cart_item',
       quantity: 1
     })
 
-    this.props.dispatch(setCartItems(items.data))
+    this.props.dispatch(setCartItems(data))
   }
 
   render() {
@@ -44,5 +45,5 @@ class Product extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({ cartItems: state.cartItems })
+const mapStateToProps = (state) => ({ cartItems: state.cartItems, cartId: state.cartId })
 export default connect(mapStateToProps)(Product)
