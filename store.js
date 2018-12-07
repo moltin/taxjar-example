@@ -46,9 +46,20 @@ export const loadProducts = () => async (dispatch) => {
   dispatch(setProducts(products.data))
 }
 
+export const addToCart = (cartId, productId) => async (dispatch) => {
+
+  let { data } = await client.post(`carts/${cartId}/items`, {
+    id: productId,
+    type: 'cart_item',
+    quantity: 1
+  })
+
+  dispatch(setCartItems(data))
+}
+
 export const loadCart = (cartId) => async (dispatch) => {
-  const response = await client.get(`carts/${cartId}/items`)
-  dispatch(setCartItems(response.data))
+  const { data } = await client.get(`carts/${cartId}/items`)
+  dispatch(setCartItems(data))
 }
 
 export const setProducts = (products) => {
@@ -59,9 +70,9 @@ export const setCartItems = (items) => {
   return { type: actionTypes.SET_CART_ITEMS, items: items }
 }
 
-export function initializeStore(initialState = initialState) {
-  if (initialState !== undefined && initialState.cartId === null) {
-    initialState.cartId = generateUUID()
+export function initializeStore(initialStoreState = initialState) {
+  if (initialStoreState.cartId === null) {
+    initialStoreState.cartId = generateUUID()
   }
-  return createStore(reducer, initialState, applyMiddleware(thunkMiddleware))
+  return createStore(reducer, initialStoreState, applyMiddleware(thunkMiddleware))
 }

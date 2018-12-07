@@ -1,25 +1,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { setCartItems } from '../store'
-import { client } from '../lib/moltin'
+import { addToCart } from '../store'
 
 class Product extends Component {
 
-  constructor(props) {
-    super(props)
-    this.addToCart = this.addToCart.bind(this);
-  }
-
   async addToCart() {
-    const { cartId } = this.props
-
-    let { data } = await client.post(`carts/${cartId}/items`, {
-      id: this.props.id,
-      type: 'cart_item',
-      quantity: 1
-    })
-
-    this.props.dispatch(setCartItems(data))
+    const { id, cartId } = this.props
+    this.props.dispatch(addToCart(cartId, id))
   }
 
   render() {
@@ -37,7 +24,7 @@ class Product extends Component {
           {meta.display_price.without_tax.formatted}
           <small className="text-muted">(+ tax)</small>
         </div>
-        <button onClick={this.addToCart} className="float-right btn btn-primary">
+        <button onClick={() => this.addToCart()} className="float-right btn btn-primary">
           Buy Now
         </button>
       </div>
