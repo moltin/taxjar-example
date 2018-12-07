@@ -1,13 +1,15 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import Link from 'next/link'
 import { connect } from 'react-redux'
 
-import { loadCart } from '../store'
+import { loadCart, loadProducts } from '../store'
 
 class Navbar extends Component {
   componentDidMount() {
-    const { cartId } = this.props
-    this.props.dispatch(loadCart(cartId))
+    const { cartId, dispatch } = this.props
+    dispatch(loadProducts())
+    dispatch(loadCart(cartId))
   }
 
   render() {
@@ -22,7 +24,7 @@ class Navbar extends Component {
         <div className="container d-flex justify-content-between">
           <Link href="/">
             <a className="navbar-brand">
-          Winter Wonderland
+              Winter Wonderland
             </a>
           </Link>
 
@@ -35,7 +37,7 @@ class Navbar extends Component {
                     <span>
                       {cartItemLength}
                       {' '}
-items
+                      items
                     </span>
                   </a>
                 </Link>
@@ -46,6 +48,12 @@ items
       </div>
     )
   }
+}
+
+Navbar.propTypes = {
+  cartId: PropTypes.string.isRequired,
+  cartItems: PropTypes.arrayOf(PropTypes.object).isRequired,
+  dispatch: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({ cartItems: state.cartItems, cartId: state.cartId })

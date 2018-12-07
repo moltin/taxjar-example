@@ -717,7 +717,7 @@
 
 "@moltin/eslint-config@git+ssh://git@github.com:moltin/eslint-config":
   version "1.0.0"
-  resolved "git+ssh://git@github.com:moltin/eslint-config#dc1dfa481e6faf5ed620b16df4420f112e79d09d"
+  resolved "git+ssh://git@github.com:moltin/eslint-config#8123111faf0bd64212c89e36882db64dad96c7e0"
   dependencies:
     eslint "^5.8.0"
     eslint-plugin-import "^2.14.0"

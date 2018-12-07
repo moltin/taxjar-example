@@ -6,7 +6,8 @@ import { loadProducts } from '../store'
 
 class CartPage extends Component {
   componentDidMount() {
-    this.props.dispatch(loadProducts())
+    const { dispatch } = this.props
+    dispatch(loadProducts())
   }
 
   render() {
@@ -27,7 +28,7 @@ class CartPage extends Component {
             </tr>
           </thead>
           <tbody>
-            {cartItems.map(item => <CartItem item={item} {...cartItems} />)}
+            {cartItems.map(item => <CartItem key={item.id} {...item} />)}
           </tbody>
         </table>
       </div>
