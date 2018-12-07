@@ -1,18 +1,49 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { setCartItems } from '../store'
+import { client } from '../lib/moltin'
 
 class Product extends Component {
-  render() {
-    const { id, name } = this.props
 
-    return <div className="card">
-      <div className="card-header">
-        {name}
-      </div>
+  constructor(props) {
+    super(props)
+    this.addToCart = this.addToCart.bind(this);
+  }
+
+  async addToCart() {
+    const { cartId } = this.props
+
+    let { data } = await client.post(`carts/${cartId}/items`, {
+      id: this.props.id,
+      type: 'cart_item',
+      quantity: 1
+    })
+
+    this.props.dispatch(setCartItems(data))
+  }
+
+  render() {
+    const { id, description, meta, main_image, name, sku, tax_code } = this.props
+
+    return <div key={id} className="card">
+      <img className="card-img-top" src={main_image.link.href} alt={name} />
       <div className="card-body">
-        <pre>{JSON.stringify(this.props, null, 2)}</pre>
+        <h3 className="card-title">{name}</h3>
+        <p className="card-text">{description}</p>
+        <p className="text-muted">SKU: {sku}<br />Tax Code: {tax_code}</p>
+      </div>
+      <div className="card-footer">
+        <div className="float-left align-middle">
+          {meta.display_price.without_tax.formatted}
+          <small className="text-muted">(+ tax)</small>
+        </div>
+        <button onClick={this.addToCart} className="float-right btn btn-primary">
+          Buy Now
+        </button>
       </div>
     </div>
   }
 }
 
-export default Product
+const mapStateToProps = (state) => ({ cartItems: state.cartItems, cartId: state.cartId })
+export default connect(mapStateToProps)(Product)
