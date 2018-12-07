@@ -21,7 +21,7 @@ class MyApp extends App {
             <Navbar></Navbar>
           </header>
           <main>
-            <div className="container mt-4">
+            <div key="container" className="container mt-4">
               <Component {...pageProps} />
             </div>
           </main>
