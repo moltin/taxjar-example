@@ -1,10 +1,10 @@
 import { createStore, applyMiddleware } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 
-import { client } from './lib/moltin'
+import { client, generateUUID } from './lib/moltin'
 
 const initialState = {
-  cartId: 'abcd', // todo make this unique
+  cartId: null,
   products: [],
   cartItems: [],
 }
@@ -16,7 +16,7 @@ export const actionTypes = {
 }
 
 export const reducer = (state = initialState, action) => {
-  switch(action.type) {
+  switch (action.type) {
     case actionTypes.SET_PRODUCTS:
       return {
         ...state,
@@ -60,5 +60,8 @@ export const setCartItems = (items) => {
 }
 
 export function initializeStore(initialState = initialState) {
+  if (initialState !== undefined && initialState.cartId === null) {
+    initialState.cartId = generateUUID()
+  }
   return createStore(reducer, initialState, applyMiddleware(thunkMiddleware))
 }
