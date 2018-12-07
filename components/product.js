@@ -12,7 +12,7 @@ class Product extends Component {
 
   async addToCart() {
 
-    let items = await client.post(`carts/abc/items`, {
+    let items = await client.post(`carts/abc/items`, { // todo `abc` needs to come from redux
       id: this.props.id,
       type: 'cart_item',
       quantity: 1
