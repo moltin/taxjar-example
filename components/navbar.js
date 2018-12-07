@@ -2,20 +2,9 @@ import React, { Component } from 'react'
 import Link from 'next/link'
 import { connect } from 'react-redux'
 
-import { loadProducts } from '../store'
-
 class Navbar extends Component {
-  state = {
-    productsCount: 0,
-  }
-
-  componentDidMount() {
-    this.props.dispatch(loadProducts())
-  }
 
   render() {
-    const { productsCount } = this.props
-
     return <div className="navbar navbar-expand-md navbar-dark bg-dark">
       <div className="container d-flex justify-content-between">
       <Link href="/">
