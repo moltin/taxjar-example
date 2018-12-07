@@ -32,18 +32,24 @@ export const reducer = (state = initialState, action) => {
   }
 }
 
+// Quick helpers to set some state
+export const setProducts = products => ({ type: actionTypes.SET_PRODUCTS, products })
+export const setCartItems = items => ({ type: actionTypes.SET_CART_ITEMS, items })
+
 export const loadProducts = () => async (dispatch) => {
   const products = await client.get('products?include=main_images')
 
-  products.data.map((product) => {
-    products.included.main_images.map((image) => {
-      if (image.id == product.relationships.main_image.data.id) {
-        product.main_image = image
-      }
-    })
+  const data = products.data.map((product) => {
+    const mainImage = products.included.main_images.find(image => (
+      image.id === product.relationships.main_image.data.id
+    ))
+    return {
+      ...product,
+      main_image: mainImage,
+    }
   })
 
-  dispatch(setProducts(products.data))
+  dispatch(setProducts(data))
 }
 
 export const addToCart = (cartId, productId) => async (dispatch) => {
@@ -61,13 +67,11 @@ export const loadCart = cartId => async (dispatch) => {
   dispatch(setCartItems(data))
 }
 
-export const setProducts = products => ({ type: actionTypes.SET_PRODUCTS, products })
-
-export const setCartItems = items => ({ type: actionTypes.SET_CART_ITEMS, items })
-
-export function initializeStore(initialStoreState = initialState) {
-  if (initialStoreState.cartId === null) {
-    initialStoreState.cartId = generateUUID()
+export function initializeStore(state = initialState) {
+  const cartId = state.cartId || generateUUID()
+  const initialStoreState = {
+    ...state,
+    cartId,
   }
   return createStore(reducer, initialStoreState, applyMiddleware(thunkMiddleware))
 }

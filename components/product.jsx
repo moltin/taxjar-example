@@ -1,21 +1,22 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { addToCart } from '../store'
 
 class Product extends Component {
   async addToCart() {
-    const { id, cartId } = this.props
-    this.props.dispatch(addToCart(cartId, id))
+    const { dispatch, id, cartId } = this.props
+    dispatch(addToCart(cartId, id))
   }
 
   render() {
     const {
-      id, description, meta, main_image, name, sku, tax_code,
+      id, description, meta, main_image: mainImage, name, sku, tax_code: taxCode,
     } = this.props
 
     return (
       <div key={id} className="card">
-        <img className="card-img-top" src={main_image.link.href} alt={name} />
+        <img className="card-img-top" src={mainImage.link.href} alt={name} />
         <div className="card-body">
           <h3 className="card-title">{name}</h3>
           <p className="card-text">{description}</p>
@@ -25,7 +26,7 @@ SKU:
             <br />
 Tax Code:
             {' '}
-            {tax_code}
+            {taxCode}
           </p>
         </div>
         <div className="card-footer">
@@ -34,13 +35,31 @@ Tax Code:
             {' '}
             <small className="text-muted">(+ tax)</small>
           </div>
-          <button onClick={() => this.addToCart()} className="float-right btn btn-primary">
-          Buy Now
+          <button type="button" onClick={() => this.addToCart()} className="float-right btn btn-primary">
+            Buy Now
           </button>
         </div>
       </div>
     )
   }
+}
+
+
+Product.propTypes = {
+  id: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  sku: PropTypes.string.isRequired,
+  tax_code: PropTypes.string.isRequired,
+  main_image: PropTypes.shape({ href: '' }),
+  description: PropTypes.string,
+  meta: PropTypes.object, // eslint-disable-line react/forbid-prop-types
+  dispatch: PropTypes.func.isRequired,
+}
+
+Product.defaultProps = {
+  description: {},
+  main_image: { href: '' },
+  meta: {},
 }
 
 const mapStateToProps = state => ({ cartItems: state.cartItems, cartId: state.cartId })
