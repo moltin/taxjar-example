@@ -4,21 +4,28 @@ import thunkMiddleware from 'redux-thunk'
 import { client } from './lib/moltin'
 
 const initialState = {
+  cartId: 'abcd', // todo make this unique
   products: [],
+  cartItems: [],
 }
 
 export const actionTypes = {
   LOAD_PRODUCTS: 'LOAD_PRODUCTS',
   SET_PRODUCTS: 'SET_PRODUCTS',
+  SET_CART_ITEMS: 'SET_CART_ITEMS',
 }
 
 export const reducer = (state = initialState, action) => {
-  // console.log('reducer()', action)
   switch(action.type) {
     case actionTypes.SET_PRODUCTS:
       return {
         ...state,
         products: action.products,
+      }
+    case actionTypes.SET_CART_ITEMS:
+      return {
+        ...state,
+        cartItems: action.items
       }
     default:
       return state
@@ -39,8 +46,17 @@ export const loadProducts = () => async (dispatch) => {
   dispatch(setProducts(products.data))
 }
 
+export const loadCart = (cartId) => async (dispatch) => {
+  const response = await client.get(`carts/${cartId}/items`)
+  dispatch(setCartItems(response.data))
+}
+
 export const setProducts = (products) => {
   return { type: actionTypes.SET_PRODUCTS, products }
+}
+
+export const setCartItems = (items) => {
+  return { type: actionTypes.SET_CART_ITEMS, items: items }
 }
 
 export function initializeStore(initialState = initialState) {
