@@ -21,8 +21,7 @@ class Product extends Component {
       </div>
       <div className="card-footer">
         <div className="float-left align-middle">
-          {meta.display_price.without_tax.formatted}
-          <small className="text-muted">(+ tax)</small>
+          {meta.display_price.without_tax.formatted} <small className="text-muted">(+ tax)</small>
         </div>
         <button onClick={() => this.addToCart()} className="float-right btn btn-primary">
           Buy Now
