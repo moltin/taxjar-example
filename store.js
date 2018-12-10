@@ -2,6 +2,7 @@ import { createStore, applyMiddleware } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 
 import { client, generateUUID } from './lib/moltin'
+import axios from 'axios'
 
 const initialState = {
   cartId: null,
@@ -60,6 +61,23 @@ export const addToCart = (cartId, productId) => async (dispatch) => {
   })
 
   dispatch(setCartItems(data))
+}
+
+export const assignTax = (cartItems) => async (dispatch) => {
+
+  console.log(cartItems)
+  let response = await axios.post('/api/tax', cartItems)
+  console.log(response)
+  // cartItems.forEach(element => {
+  //   console.log(element)
+  //   axios.post('/api/tax').then(function (response) {
+  //     console.log(response);
+  //   }).catch((err) => console.log(err))
+  // });
+
+  // TODO: Assign cart item tax to prop / state
+
+  // dispatch(setCartItems(data))
 }
 
 export const loadCart = cartId => async (dispatch) => {

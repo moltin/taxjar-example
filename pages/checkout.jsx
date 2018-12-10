@@ -3,18 +3,20 @@ import { connect } from 'react-redux'
 // import Link from 'next/link'
 
 import CartItem from '../components/cart-item'
-import { loadProducts } from '../store'
+import { assignTax } from '../store'
 
-class CartPage extends Component {
+class CheckoutPage extends Component {
   componentDidMount() {
-    const { dispatch } = this.props
-    dispatch(loadProducts())
+    // TODO: Render tax price
+    const { dispatch, cartItems } = this.props
+    dispatch(assignTax(cartItems))
   }
 
   render() {
     const { cartItems } = this.props
     return (
       <div>
+        <h1>Whatever</h1>
         <h4 className="d-flex justify-content-between align-items-center mb-3">
           <span className="text-muted">Your cart</span>
           <span className="badge badge-secondary badge-pill">{cartItems.length}</span>
@@ -26,6 +28,7 @@ class CartPage extends Component {
               <th scope="col">Product</th>
               <th scope="col">Quantity</th>
               <th scope="col">Price</th>
+              <th scope="col">Tax</th>
             </tr>
           </thead>
           <tbody>
@@ -40,4 +43,4 @@ class CartPage extends Component {
 }
 
 const mapStateToProps = state => ({ cartItems: state.cartItems })
-export default connect(mapStateToProps)(CartPage)
+export default connect(mapStateToProps)(CheckoutPage)
