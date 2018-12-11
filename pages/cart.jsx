@@ -43,7 +43,7 @@ class CartPage extends Component {
             {cartItems.map(item => <CartItem key={item.id} {...item} />)}
           </tbody>
         </table>
-        <a className="btn btn-primary" href="/checkout" role="button">Checkout</a>
+        <a className="btn btn-success float-right" href="/checkout" role="button">Checkout</a>
       </div>
     )
   }
