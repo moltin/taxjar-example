@@ -62,6 +62,12 @@ export const addToCart = (cartId, productId) => async (dispatch) => {
 
   dispatch(setCartItems(data))
 }
+export const removeFromCart = (cartId, itemId) => async (dispatch) => {
+  const { data } = await client.delete(`carts/${cartId}/items/${itemId}`)
+
+  dispatch(setCartItems(data))
+}
+
 
 export const assignTax = (cartItems) => async (dispatch) => {
 

@@ -44,7 +44,6 @@ Tax Code:
   }
 }
 
-
 Product.propTypes = {
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,

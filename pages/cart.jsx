@@ -13,6 +13,16 @@ class CartPage extends Component {
 
   render() {
     const { cartItems } = this.props
+
+    if (cartItems.length === 0) {
+      return (
+        <div className="alert alert-secondary" role="alert">
+          <h4 className="alert-heading">Your Cart is Empty!</h4>
+          <p>Please add some products and then you can checkout</p>
+        </div>
+      )
+    }
+
     return (
       <div>
         <h4 className="d-flex justify-content-between align-items-center mb-3">
@@ -26,13 +36,13 @@ class CartPage extends Component {
               <th scope="col">Product</th>
               <th scope="col">Quantity</th>
               <th scope="col">Price</th>
+              <th scope="col">&nbsp;</th>
             </tr>
           </thead>
           <tbody>
             {cartItems.map(item => <CartItem key={item.id} {...item} />)}
           </tbody>
         </table>
-        {/* <Link href="/checkout"><button type="button" href="/checkout" className="btn btn-primary">Checkout</button></Link> */}
         <a className="btn btn-primary" href="/checkout" role="button">Checkout</a>
       </div>
     )
