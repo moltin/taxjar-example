@@ -88,6 +88,21 @@ export const assignTax = (cartItems) => async (dispatch) => {
   console.log(cartItems)
   let response = await axios.post('/api/tax', cartItems)
   console.log(response)
+
+  // Create a moltin tax item based on response from tax jar
+  let taxItems = response.data.response.tax.breakdown.line_items
+  taxItems.forEach(taxItem => {
+    let moltinTaxItem = {
+      data: {
+        type: "tax_item",
+        name: "VAT",
+        jurisdiction: "UK",
+        code: "SOMETAXCODE",
+        rate: 0.2
+      }
+    }
+    client.post(`carts/${cartId}/items/${taxItem.id}/taxes`, moltinTaxItem)
+  });
   // cartItems.forEach(element => {
   //   console.log(element)
   //   axios.post('/api/tax').then(function (response) {

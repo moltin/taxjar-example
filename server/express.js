@@ -16,8 +16,7 @@ router.post('/tax', (req, res) => {
     to_state: 'CA',
     to_city: 'Los Angeles',
     to_street: '1335 E 103rd St',
-    amount: 15,
-    shipping: 1.5,
+    shipping: 0,
     nexus_addresses: [
       {
         id: 'Main Location',
@@ -29,21 +28,33 @@ router.post('/tax', (req, res) => {
       },
     ],
     line_items: [
-      {
-        id: '1',
-        quantity: 1,
-        product_tax_code: '20010',
-        unit_price: 15,
-        discount: 0,
-      },
     ],
   }
-  console.log(JSON.stringify(req.body))
-  req.body.forEach((element) => {
+
+  req.body.forEach((cartItem) => {
     // TODO: Build line item per cart entry
-    console.log(element)
+    const taxItem = {}
+    taxItem.id = cartItem.id
+    taxItem.quantity = cartItem.quantity
+    taxItem.unit_price = cartItem.unit_price.amount
+    taxRequest.line_items.push(taxItem)
   })
-  taxclient.taxForOrder(taxRequest).then(response => res.status(200).json({ response }))
+  const taxJarResponse = taxclient.taxForOrder(taxRequest).then(response => response)
+
+  // TODO: Create a moltin tax item based on response from tax jar
+  // let taxItems = response.data.response.tax.breakdown.line_items
+  // taxItems.forEach(taxItem => {
+  //   let moltinTaxItem = {
+  //     data: {
+  //       type: "tax_item",
+  //       name: "VAT",
+  //       jurisdiction: "UK",
+  //       code: "SOMETAXCODE",
+  //       rate: 0.2
+  //     }
+  //   }
+  //   client.post(`carts/${cartId}/items/${taxItem.id}/taxes`, moltinTaxItem)
+  // });
 })
 
 module.exports = router
