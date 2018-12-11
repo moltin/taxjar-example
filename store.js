@@ -3,7 +3,6 @@ import thunkMiddleware from 'redux-thunk'
 
 import axios from 'axios'
 import { client, generateUUID } from './lib/moltin'
-import axios from 'axios'
 
 const initialState = {
   cartId: null,
@@ -82,7 +81,6 @@ export const loadProducts = () => async (dispatch) => {
 
   dispatch(setProducts(data))
 }
-
 
 export const loadCart = cartId => async (dispatch) => {
   const { data } = await client.get(`carts/${cartId}`)
