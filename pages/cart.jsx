@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-// import Link from 'next/link'
 
 import CartItem from '../components/cart-item'
 import { loadProducts } from '../store'

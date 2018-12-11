@@ -1,19 +1,21 @@
 import { createStore, applyMiddleware } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 
-import { client, generateUUID } from './lib/moltin'
 import axios from 'axios'
+import { client, generateUUID } from './lib/moltin'
 
 const initialState = {
   cartId: null,
   products: [],
   cartItems: [],
+  cart: {},
 }
 
 export const actionTypes = {
   LOAD_PRODUCTS: 'LOAD_PRODUCTS',
   SET_PRODUCTS: 'SET_PRODUCTS',
   SET_CART_ITEMS: 'SET_CART_ITEMS',
+  SET_CART: 'SET_CART',
 }
 
 export const reducer = (state = initialState, action) => {
@@ -28,6 +30,11 @@ export const reducer = (state = initialState, action) => {
         ...state,
         cartItems: action.items,
       }
+    case actionTypes.SET_CART:
+      return {
+        ...state,
+        cart: action.cart,
+      }
     default:
       return state
   }
@@ -35,6 +42,7 @@ export const reducer = (state = initialState, action) => {
 
 // Quick helpers to set some state
 export const setProducts = products => ({ type: actionTypes.SET_PRODUCTS, products })
+export const setCart = cart => ({ type: actionTypes.SET_CART, cart })
 export const setCartItems = items => ({ type: actionTypes.SET_CART_ITEMS, items })
 
 export const loadProducts = () => async (dispatch) => {
@@ -53,6 +61,11 @@ export const loadProducts = () => async (dispatch) => {
   dispatch(setProducts(data))
 }
 
+export const loadCart = cartId => async (dispatch) => {
+  const { data } = await client.get(`carts/${cartId}`)
+  dispatch(setCart(data))
+}
+
 export const addToCart = (cartId, productId) => async (dispatch) => {
   const { data } = await client.post(`carts/${cartId}/items`, {
     id: productId,
@@ -61,16 +74,17 @@ export const addToCart = (cartId, productId) => async (dispatch) => {
   })
 
   dispatch(setCartItems(data))
+  loadCart(cartId)
 }
+
 export const removeFromCart = (cartId, itemId) => async (dispatch) => {
   const { data } = await client.delete(`carts/${cartId}/items/${itemId}`)
-
   dispatch(setCartItems(data))
+  loadCart(cartId)
 }
 
 
 export const assignTax = (cartItems) => async (dispatch) => {
-
   console.log(cartItems)
   let response = await axios.post('/api/tax', cartItems)
   console.log(response)
@@ -86,9 +100,10 @@ export const assignTax = (cartItems) => async (dispatch) => {
   // dispatch(setCartItems(data))
 }
 
-export const loadCart = cartId => async (dispatch) => {
+export const loadCartItems = cartId => async (dispatch) => {
   const { data } = await client.get(`carts/${cartId}/items`)
   dispatch(setCartItems(data))
+  loadCart(cartId)
 }
 
 export function initializeStore(state = initialState) {
