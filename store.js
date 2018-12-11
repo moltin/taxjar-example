@@ -83,17 +83,13 @@ export const removeFromCart = (cartId, itemId) => async (dispatch) => {
   loadCart(cartId)
 }
 
-
-export const assignTax = (cartItems) => async (dispatch) => {
+export const assignTax = (cartItems, cartId) => async (dispatch) => {
   console.log(cartItems)
-  let response = await axios.post('/api/tax', cartItems)
+  let response = await axios.post('/api/tax', {
+    cart_id: cartId,
+    cart_items: cartItems
+  })
   console.log(response)
-  // cartItems.forEach(element => {
-  //   console.log(element)
-  //   axios.post('/api/tax').then(function (response) {
-  //     console.log(response);
-  //   }).catch((err) => console.log(err))
-  // });
 
   // TODO: Assign cart item tax to prop / state
 
