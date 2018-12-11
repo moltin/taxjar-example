@@ -83,32 +83,13 @@ export const removeFromCart = (cartId, itemId) => async (dispatch) => {
   loadCart(cartId)
 }
 
-
-export const assignTax = (cartItems) => async (dispatch) => {
+export const assignTax = (cartItems, cartId) => async (dispatch) => {
   console.log(cartItems)
-  let response = await axios.post('/api/tax', cartItems)
+  let response = await axios.post('/api/tax', {
+    cart_id: cartId,
+    cart_items: cartItems
+  })
   console.log(response)
-
-  // Create a moltin tax item based on response from tax jar
-  let taxItems = response.data.response.tax.breakdown.line_items
-  taxItems.forEach(taxItem => {
-    let moltinTaxItem = {
-      data: {
-        type: "tax_item",
-        name: "VAT",
-        jurisdiction: "UK",
-        code: "SOMETAXCODE",
-        rate: 0.2
-      }
-    }
-    client.post(`carts/${cartId}/items/${taxItem.id}/taxes`, moltinTaxItem)
-  });
-  // cartItems.forEach(element => {
-  //   console.log(element)
-  //   axios.post('/api/tax').then(function (response) {
-  //     console.log(response);
-  //   }).catch((err) => console.log(err))
-  // });
 
   // TODO: Assign cart item tax to prop / state
 

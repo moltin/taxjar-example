@@ -1,11 +1,20 @@
 const express = require('express')
+const { createClient } = require('@moltin/request')
 const taxclient = require('../lib/taxjar')
+require('dotenv').config()
+
+const client = new createClient({
+  client_id: process.env.MOLTIN_CLIENT_ID,
+  client_secret: process.env.MOLTIN_CLIENT_SECRET,
+})
 
 const router = express.Router()
 
 
-router.post('/tax', (req, res) => {
-  const taxRequest = {
+router.post('/tax', async (req, res) => {
+  // TODO: Need to change this based on customer address
+  const resObject = { data: [] }
+  const taxJarRequest = {
     from_country: 'US',
     from_zip: '92093',
     from_state: 'CA',
@@ -31,30 +40,36 @@ router.post('/tax', (req, res) => {
     ],
   }
 
-  req.body.forEach((cartItem) => {
-    // TODO: Build line item per cart entry
+  req.body.cart_items.forEach((cartItem) => {
     const taxItem = {}
     taxItem.id = cartItem.id
     taxItem.quantity = cartItem.quantity
     taxItem.unit_price = cartItem.unit_price.amount
-    taxRequest.line_items.push(taxItem)
+    taxJarRequest.line_items.push(taxItem)
   })
-  const taxJarResponse = taxclient.taxForOrder(taxRequest).then(response => response)
+  const taxJarResponse = await taxclient.taxForOrder(taxJarRequest)
 
   // TODO: Create a moltin tax item based on response from tax jar
-  // let taxItems = response.data.response.tax.breakdown.line_items
-  // taxItems.forEach(taxItem => {
-  //   let moltinTaxItem = {
-  //     data: {
-  //       type: "tax_item",
-  //       name: "VAT",
-  //       jurisdiction: "UK",
-  //       code: "SOMETAXCODE",
-  //       rate: 0.2
-  //     }
-  //   }
-  //   client.post(`carts/${cartId}/items/${taxItem.id}/taxes`, moltinTaxItem)
-  // });
+  const taxItems = taxJarResponse.tax.breakdown.line_items
+  taxItems.forEach(async (taxItem) => {
+    const moltinTaxItem = {
+      type: 'tax_item',
+      name: 'VAT',
+      jurisdiction: taxJarResponse.tax.jurisdictions.country,
+      code: 'SOMETAXCODE',
+      rate: taxJarResponse.tax.rate,
+    }
+
+    // TODO: Work out if tax already applied.
+    // If tax already is applied do we want to delete and reapply?
+    // let currentTaxes = await client.get(`carts/${req.body.cart_id}/items/${taxItem.id}/taxes`)
+    // Add tax item
+    console.log(moltinTaxItem)
+    console.log(`carts/${req.body.cart_id}/items/${taxItem.id}/taxes`)
+    const taxItemResponse = await client.post(`carts/${req.body.cart_id}/items/${taxItem.id}/taxes`, moltinTaxItem)
+    console.log(taxItemResponse)
+    resObject.data.push(taxItemResponse)
+  })
 })
 
 module.exports = router
