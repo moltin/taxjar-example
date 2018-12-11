@@ -3,13 +3,13 @@ import PropTypes from 'prop-types'
 import Link from 'next/link'
 import { connect } from 'react-redux'
 
-import { loadCart, loadProducts } from '../store'
+import { loadCartItems, loadProducts } from '../store'
 
 class Navbar extends Component {
   componentDidMount() {
     const { cartId, dispatch } = this.props
     dispatch(loadProducts())
-    dispatch(loadCart(cartId))
+    dispatch(loadCartItems(cartId))
   }
 
   render() {
