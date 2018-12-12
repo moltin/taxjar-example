@@ -5,10 +5,10 @@ import { connect } from 'react-redux'
 class Billing extends Component {
   render() {
     const {
-      isBillingSelectDisabled,
       taxState,
       knownAddresses,
       updateAddressHandler,
+      selectIsDisabled,
     } = this.props
 
     const optionItems = () => {
@@ -27,17 +27,18 @@ class Billing extends Component {
     return (
       <form>
         <div className="mt-4 alert alert-primary" role="alert">
-          <p>TaxJar will verify the full address - for convenience, we have some default addresses that you can simply select.</p>
-          <p>In a real store, this will be submitted via form controls for an address.</p>
+          TaxJar will verify the full address.
+          For convenience, we have some addresses that you can simply select
+          rather than adding them via the inputs.
           <hr />
           <select
             value={taxState}
             className="custom-select d-block w-100"
             onChange={updateAddressHandler}
-            disabled={isBillingSelectDisabled}
             id="address"
+            disabled={selectIsDisabled}
           >
-            <option key="default" value="" disabled={taxState !== null}>Choose an address...</option>
+            <option key="default" value="" disabled={taxState !== undefined}>Choose an address...</option>
             {optionItems()}
           </select>
         </div>

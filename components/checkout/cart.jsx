@@ -47,6 +47,7 @@ class CheckoutPageCart extends Component {
       }
       return ''
     }
+
     return (
       <ul className="list-group mb-3">
         {cartItems.map(item => <CartItem key={item.id} {...item} />)}
