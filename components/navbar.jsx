@@ -13,7 +13,7 @@ class Navbar extends Component {
   }
 
   render() {
-    const { cartItems } = this.props
+    const { cartItems, taxState } = this.props
     let cartItemLength = 0
     cartItems.forEach((item) => {
       cartItemLength += item.quantity
@@ -38,6 +38,9 @@ class Navbar extends Component {
                       {cartItemLength}
                       {' '}
                       items
+                      (
+                      {taxState}
+                      )
                     </span>
                   </a>
                 </Link>
@@ -51,10 +54,15 @@ class Navbar extends Component {
 }
 
 Navbar.propTypes = {
+  taxState: PropTypes.string.isRequired,
   cartId: PropTypes.string.isRequired,
   cartItems: PropTypes.arrayOf(PropTypes.object).isRequired,
   dispatch: PropTypes.func.isRequired,
 }
 
-const mapStateToProps = state => ({ cartItems: state.cartItems, cartId: state.cartId })
+const mapStateToProps = state => ({
+  cartItems: state.cartItems,
+  cartId: state.cartId,
+  taxState: state.taxState,
+})
 export default connect(mapStateToProps)(Navbar)

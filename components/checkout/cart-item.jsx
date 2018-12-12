@@ -7,7 +7,6 @@ class CartItemSmall extends Component {
     const {
       id, name, description, meta, quantity,
     } = this.props
-
     return (
       <li key={id} className="list-group-item d-flex justify-content-between lh-condensed">
         <div>
@@ -18,7 +17,13 @@ class CartItemSmall extends Component {
           </h6>
           <small className="text-muted">{description}</small>
         </div>
-        <span className="text-muted">{meta.display_price.without_tax.value.formatted}</span>
+        <span className="text-muted">
+          {meta.display_price.without_tax.value.formatted}
+          +
+          <br />
+          {meta.display_price.tax.value.formatted}
+          (tax)
+        </span>
       </li>
     )
   }

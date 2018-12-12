@@ -10,66 +10,91 @@ const client = new createClient({
 
 const router = express.Router()
 
+const fromCountry = process.env.FROM_COUNTRY
+const fromZip = process.env.FROM_ZIP
+const fromState = process.env.FROM_STATE
+const fromCity = process.env.FROM_CITY
+const fromStreet = process.env.FROM_STREET
 
 router.post('/tax', async (req, res) => {
-  // TODO: Need to change this based on customer address
-  const resObject = { data: [] }
+  console.log('tax req received')
   const taxJarRequest = {
-    from_country: 'US',
-    from_zip: '92093',
-    from_state: 'CA',
-    from_city: 'La Jolla',
-    from_street: '9500 Gilman Drive',
-    to_country: 'US',
-    to_zip: '90002',
-    to_state: 'CA',
-    to_city: 'Los Angeles',
-    to_street: '1335 E 103rd St',
+
+    from_country: fromCountry,
+    from_zip: fromZip,
+    from_state: fromState,
+    from_city: fromCity,
+    from_street: fromStreet,
+
+    to_city: req.body.city,
+    to_state: req.body.jurisdiction,
+    to_country: req.body.country,
+    to_zip: req.body.zip,
+
     shipping: 0,
-    nexus_addresses: [
-      {
-        id: 'Main Location',
-        country: 'US',
-        zip: '92093',
-        state: 'CA',
-        city: 'La Jolla',
-        street: '9500 Gilman Drive',
-      },
-    ],
-    line_items: [
-    ],
+    line_items: [],
   }
 
-  req.body.cart_items.forEach((cartItem) => {
-    const taxItem = {}
-    taxItem.id = cartItem.id
-    taxItem.quantity = cartItem.quantity
-    taxItem.unit_price = cartItem.unit_price.amount
+  req.body.cartItems.forEach((cartItem) => {
+    const taxItem = {
+      id: cartItem.id,
+      quantity: cartItem.quantity,
+      unit_price: cartItem.unit_price.amount / 100, // note that we have hard coded our exponent against base 10 here
+      product_tax_code: cartItem.tax_code,
+    }
     taxJarRequest.line_items.push(taxItem)
   })
-  const taxJarResponse = await taxclient.taxForOrder(taxJarRequest)
 
-  // TODO: Create a moltin tax item based on response from tax jar
-  const taxItems = taxJarResponse.tax.breakdown.line_items
-  taxItems.forEach(async (taxItem) => {
-    const moltinTaxItem = {
-      type: 'tax_item',
-      name: 'VAT',
-      jurisdiction: taxJarResponse.tax.jurisdictions.country,
-      code: 'SOMETAXCODE',
-      rate: taxJarResponse.tax.rate,
-    }
+  console.log('taxJarRequest body:', JSON.stringify(taxJarRequest))
 
-    // TODO: Work out if tax already applied.
-    // If tax already is applied do we want to delete and reapply?
-    // let currentTaxes = await client.get(`carts/${req.body.cart_id}/items/${taxItem.id}/taxes`)
-    // Add tax item
-    console.log(moltinTaxItem)
-    console.log(`carts/${req.body.cart_id}/items/${taxItem.id}/taxes`)
-    const taxItemResponse = await client.post(`carts/${req.body.cart_id}/items/${taxItem.id}/taxes`, moltinTaxItem)
-    console.log(taxItemResponse)
-    resObject.data.push(taxItemResponse)
+  const taxJarResponse = await taxclient.taxForOrder(taxJarRequest).catch((err) => {
+    // console.log(err)
+    res.status(err.status).send({
+      errors: [
+        {
+          message: err.detail,
+        },
+      ],
+    })
   })
+  console.log('taxJarResponse body:', JSON.stringify(taxJarResponse))
+
+  const existingTaxes = await client.get(`carts/${req.body.cartId}/items`)
+  existingTaxes.data.forEach(async (cartItem) => {
+    if (
+      typeof cartItem.relationships !== 'undefined'
+      && typeof cartItem.relationships.taxes !== 'undefined'
+      && typeof cartItem.relationships.taxes.data !== 'undefined'
+    ) {
+      cartItem.relationships.taxes.data.forEach(async (taxRel) => {
+        console.log('Deleting tax item:', `carts/${req.body.cartId}/items/${cartItem.id}/taxes/${taxRel.id}`)
+        const { statusCode } = await client.delete(`carts/${req.body.cartId}/items/${cartItem.id}/taxes/${taxRel.id}`).catch(console.error)
+        console.log('Deleted existing moltin tax item:', statusCode)
+      })
+    }
+  })
+
+  // if line_items is empty, it means there are no taxes applicable to the cart
+  if (taxJarResponse.tax.breakdown !== undefined) {
+    const taxItems = taxJarResponse.tax.breakdown.line_items
+    taxItems.forEach(async (taxItem) => {
+      const cartItem = req.body.cartItems.filter(item => item.id === taxItem.id)
+      const moltinTaxItem = {
+        type: 'tax_item',
+        name: 'Item Tax',
+        jurisdiction: taxJarResponse.tax.jurisdictions.country,
+        code: cartItem[0].tax_code,
+        rate: taxJarResponse.tax.rate,
+      }
+
+      console.log('Creating moltin tax for cart item:', taxItem.id)
+      const { statusCode } = await client.post(`carts/${req.body.cartId}/items/${taxItem.id}/taxes`, moltinTaxItem).catch(console.error)
+      // console.log('Created moltin tax item:', data)
+      console.log('status:', statusCode)
+    })
+  } else {
+    console.log('TaxJar responded without breakdown, no moltin taxt items created')
+  }
 })
 
 module.exports = router
