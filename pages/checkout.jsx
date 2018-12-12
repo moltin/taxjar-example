@@ -80,10 +80,6 @@ class CheckoutPage extends Component {
           cartItems,
         ),
       )
-
-      // refresh the cart state so that all line items are correct
-      dispatch(loadCart(cart.id))
-      dispatch(loadCartItems(cart.id))
     }
 
     return (

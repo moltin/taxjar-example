@@ -17,6 +17,10 @@ const fromCity = process.env.FROM_CITY
 const fromStreet = process.env.FROM_STREET
 
 router.post('/tax', async (req, res) => {
+  const calls = []
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
   console.log('tax req received')
   const taxJarRequest = {
 
@@ -47,6 +51,7 @@ router.post('/tax', async (req, res) => {
 
   console.log('taxJarRequest body:', JSON.stringify(taxJarRequest))
 
+  calls.push({ taxJarGetTaxForOrder: taxJarRequest })
   const taxJarResponse = await taxclient.taxForOrder(taxJarRequest).catch((err) => {
     // console.log(err)
     res.status(err.status).send({
@@ -57,23 +62,32 @@ router.post('/tax', async (req, res) => {
       ],
     })
   })
+  calls.push({ taxJarResponseGetTaxForOrder: taxJarResponse })
   console.log('taxJarResponse body:', JSON.stringify(taxJarResponse))
 
   const existingTaxes = await client.get(`carts/${req.body.cartId}/items`)
-  existingTaxes.data.forEach(async (cartItem) => {
-    if (
-      typeof cartItem.relationships !== 'undefined'
-      && typeof cartItem.relationships.taxes !== 'undefined'
-      && typeof cartItem.relationships.taxes.data !== 'undefined'
-    ) {
-      cartItem.relationships.taxes.data.forEach(async (taxRel) => {
-        console.log('Deleting tax item:', `carts/${req.body.cartId}/items/${cartItem.id}/taxes/${taxRel.id}`)
-        const { statusCode } = await client.delete(`carts/${req.body.cartId}/items/${cartItem.id}/taxes/${taxRel.id}`).catch(console.error)
-        console.log('Deleted existing moltin tax item:', statusCode)
-      })
-    }
-  })
+  calls.push({ getExistingTaxes: `carts/${req.body.cartId}/items` })
+  const l = async () => (existingTaxes.data.forEach(async (cartItem) => {
+    sleep(1000).then(() => {
+      if (
+        typeof cartItem.relationships !== 'undefined'
+        && typeof cartItem.relationships.taxes !== 'undefined'
+        && typeof cartItem.relationships.taxes.data !== 'undefined'
+      ) {
+        cartItem.relationships.taxes.data.forEach(async (taxRel) => {
 
+
+          calls.push({ deletingExistingTaxItem: `carts/${req.body.cartId}/items/${cartItem.id}/taxes/${taxRel.id}` })
+          console.log('Deleting tax item:', `carts/${req.body.cartId}/items/${cartItem.id}/taxes/${taxRel.id}`)
+          const { statusCode } = await client.delete(`carts/${req.body.cartId}/items/${cartItem.id}/taxes/${taxRel.id}`).catch(console.error)
+          calls.push({ deletedExistingTaxItem: statusCode })
+          console.log('Deleted existing moltin tax item:', statusCode)
+        })
+      }
+    })
+  })
+  )
+  l()
   // if line_items is empty, it means there are no taxes applicable to the cart
   if (taxJarResponse.tax.breakdown !== undefined) {
     const taxItems = taxJarResponse.tax.breakdown.line_items
@@ -87,14 +101,26 @@ router.post('/tax', async (req, res) => {
         rate: taxJarResponse.tax.rate,
       }
 
-      console.log('Creating moltin tax for cart item:', taxItem.id)
+      console.log('Creating moltin tax for cart item:', taxItem.id, moltinTaxItem)
+      calls.push({
+        creatingTaxItem: {
+          url: `carts/${req.body.cartId}/items/${taxItem.id}/taxes`,
+          body: moltinTaxItem,
+        },
+      })
       const { statusCode } = await client.post(`carts/${req.body.cartId}/items/${taxItem.id}/taxes`, moltinTaxItem).catch(console.error)
+      calls.push({ createdTaxItem: statusCode })
       // console.log('Created moltin tax item:', data)
       console.log('status:', statusCode)
     })
   } else {
+    calls.push({
+      taxJarNoBreakdown: true,
+    })
     console.log('TaxJar responded without breakdown, no moltin taxt items created')
   }
+
+  res.status(219).send(calls)
 })
 
 module.exports = router
