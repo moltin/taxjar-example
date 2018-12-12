@@ -102,13 +102,29 @@ export const loadCartItems = cartId => async (dispatch) => {
 export const updateTaxes = (
   city, jurisdiction, country, zip, cartId, cartItems,
 ) => async () => {
-  await axios.post('/api/tax', {
+  // Calculate based on new jurisdiction
+  const taxJarResponse = await axios.post('/api/calculate', {
     city,
     jurisdiction,
     country,
     zip,
+    cartItems,
+  }).catch((e) => {
+    console.log('e', e)
+  })
+
+  // Delete existing taxes since we are updating
+  await axios.delete('/api/tax', {
+    data: { cartId },
+  }).catch((e) => {
+    console.log('e', e)
+  })
+
+  // Apply new taxes
+  await axios.post('/api/tax', {
     cartId,
     cartItems,
+    taxJarResponse,
   }).then((response) => {
     console.log('response', response)
   }).catch((e) => {
