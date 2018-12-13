@@ -130,9 +130,6 @@ export const updateTaxes = (
   }).catch((e) => {
     console.log('e', e)
   })
-
-  loadCart(cartId)
-  loadCartItems(cartId)
 }
 
 export function initializeStore(state = initialState) {

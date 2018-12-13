@@ -52,10 +52,11 @@ class CheckoutPage extends Component {
       },
     }
     const { cart, cartItems } = this.props
+    let { taxState } = this.props
 
     const updateAddressHandler = async (event) => {
       const { dispatch } = this.props
-      const taxState = event.target.value
+      taxState = event.target.value
 
       // check the address is valid
       if (knownAddresses[taxState] === undefined) {
@@ -64,13 +65,9 @@ class CheckoutPage extends Component {
 
       dispatch(updateTaxState(taxState))
 
-      // refresh the cart state so that all line items are correct
-      dispatch(loadCart(cart.id))
-      dispatch(loadCartItems(cart.id))
-
       // update the taxes for the cart
       const address = knownAddresses[taxState]
-      dispatch(
+      await dispatch(
         updateTaxes(
           address.city,
           address.state,
@@ -80,6 +77,10 @@ class CheckoutPage extends Component {
           cartItems,
         ),
       )
+
+      // refresh the cart state so that all line items are correct
+      await dispatch(loadCart(cart.id))
+      await dispatch(loadCartItems(cart.id))
     }
 
     return (
@@ -90,7 +91,7 @@ class CheckoutPage extends Component {
         </div>
         <div className="col-md-8 order-md-1">
           <h4 className="mb-3">Billing address</h4>
-          <Billing id="billing" updateAddressHandler={updateAddressHandler} knownAddresses={knownAddresses} />
+          <Billing id="billing" taxState={taxState} updateAddressHandler={updateAddressHandler} knownAddresses={knownAddresses} />
         </div>
       </div>
     )
@@ -98,6 +99,7 @@ class CheckoutPage extends Component {
 }
 
 CheckoutPage.propTypes = {
+  taxState: PropTypes.string.isRequired,
   cart: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   cartId: PropTypes.string,
   cartItems: PropTypes.array, // eslint-disable-line react/forbid-prop-types
@@ -114,6 +116,7 @@ const mapStateToProps = state => ({
   cart: state.cart,
   cartId: state.cartId,
   cartItems: state.cartItems,
+  taxState: state.taxState,
 })
 
 export default connect(mapStateToProps)(CheckoutPage)

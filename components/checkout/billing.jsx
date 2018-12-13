@@ -8,7 +8,6 @@ class Billing extends Component {
       taxState,
       knownAddresses,
       updateAddressHandler,
-      selectIsDisabled,
     } = this.props
 
     const optionItems = () => {
@@ -27,16 +26,14 @@ class Billing extends Component {
     return (
       <form>
         <div className="mt-4 alert alert-primary" role="alert">
-          TaxJar will verify the full address.
-          For convenience, we have some addresses that you can simply select
-          rather than adding them via the inputs.
+          <p>TaxJar will verify the full address - for convenience, we have some default addresses that you can simply select.</p>
+          <p>In a real store, this will be submitted via form controls for an address.</p>
           <hr />
           <select
             value={taxState}
             className="custom-select d-block w-100"
             onChange={updateAddressHandler}
             id="address"
-            disabled={selectIsDisabled}
           >
             <option key="default" value="" disabled={taxState !== undefined}>Choose an address...</option>
             {optionItems()}
@@ -48,7 +45,6 @@ class Billing extends Component {
 }
 
 Billing.propTypes = {
-  selectIsDisabled: PropTypes.bool.isRequired,
   taxState: PropTypes.string.isRequired,
   knownAddresses: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
   updateAddressHandler: PropTypes.func.isRequired,
