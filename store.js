@@ -82,6 +82,7 @@ export const loadProducts = () => async (dispatch) => {
   dispatch(setProducts(data))
 }
 
+
 export const loadCart = cartId => async (dispatch) => {
   const { data } = await client.get(`carts/${cartId}`)
   dispatch(setCart(data))
