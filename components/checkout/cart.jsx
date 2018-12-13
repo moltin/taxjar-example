@@ -5,7 +5,7 @@ import CartItem from './cart-item'
 
 class CheckoutPageCart extends Component {
   render() {
-    const { cart, cartItems } = this.props
+    const { cart, cartItems, taxState } = this.props
 
     const cartPriceWithoutTax = () => {
       if (typeof cart.meta !== 'undefined') {
@@ -23,7 +23,12 @@ class CheckoutPageCart extends Component {
       if (typeof cart.meta !== 'undefined') {
         return (
           <li className="list-group-item d-flex justify-content-between">
-            <span>Tax Total</span>
+            <span>
+              Tax Total
+              (
+              {taxState}
+              )
+            </span>
             <strong>{cart.meta.display_price.tax.formatted}</strong>
           </li>
         )
@@ -57,6 +62,7 @@ class CheckoutPageCart extends Component {
 const mapStateToProps = state => ({
   cartItems: state.cartItems,
   cart: state.cart,
+  taxState: state.taxState,
 })
 
 export default connect(mapStateToProps)(CheckoutPageCart)

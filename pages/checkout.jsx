@@ -10,6 +10,7 @@ import {
   loadCartItems,
   updateTaxes,
   updateTaxState,
+  updateIsBillingSelectDisabled,
 } from '../store'
 
 class CheckoutPage extends Component {
@@ -51,22 +52,25 @@ class CheckoutPage extends Component {
         zip: '99201',
       },
     }
-    const { cart, cartItems } = this.props
-    let { taxState } = this.props
+    const {
+      cart, cartItems, isBillingSelectDisabled, taxState,
+    } = this.props
 
     const updateAddressHandler = async (event) => {
       const { dispatch } = this.props
-      taxState = event.target.value
+      const newTaxState = event.target.value
 
       // check the address is valid
       if (knownAddresses[taxState] === undefined) {
         return
       }
 
-      dispatch(updateTaxState(taxState))
+      dispatch(updateIsBillingSelectDisabled(true))
+
+      dispatch(updateTaxState(newTaxState))
 
       // update the taxes for the cart
-      const address = knownAddresses[taxState]
+      const address = knownAddresses[newTaxState]
       await dispatch(
         updateTaxes(
           address.city,
@@ -81,6 +85,8 @@ class CheckoutPage extends Component {
       // refresh the cart state so that all line items are correct
       await dispatch(loadCart(cart.id))
       await dispatch(loadCartItems(cart.id))
+
+      dispatch(updateIsBillingSelectDisabled(false))
     }
 
     return (
@@ -91,7 +97,7 @@ class CheckoutPage extends Component {
         </div>
         <div className="col-md-8 order-md-1">
           <h4 className="mb-3">Billing address</h4>
-          <Billing id="billing" taxState={taxState} updateAddressHandler={updateAddressHandler} knownAddresses={knownAddresses} />
+          <Billing id="billing" isBillingSelectDisabled={isBillingSelectDisabled} taxState={taxState} updateAddressHandler={updateAddressHandler} knownAddresses={knownAddresses} />
         </div>
       </div>
     )
@@ -99,6 +105,7 @@ class CheckoutPage extends Component {
 }
 
 CheckoutPage.propTypes = {
+  isBillingSelectDisabled: PropTypes.bool.isRequired,
   taxState: PropTypes.string.isRequired,
   cart: PropTypes.object, // eslint-disable-line react/forbid-prop-types
   cartId: PropTypes.string,
@@ -113,6 +120,7 @@ CheckoutPage.defaultProps = {
 }
 
 const mapStateToProps = state => ({
+  isBillingSelectDisabled: state.isBillingSelectDisabled,
   cart: state.cart,
   cartId: state.cartId,
   cartItems: state.cartItems,

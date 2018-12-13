@@ -12,6 +12,7 @@ const initialState = {
   // `taxState` is simply the (geographic) state value so we can maintain taxe prices
   // when the user navigates different pages after selecting an address during checkout
   taxState: null,
+  isBillingSelectDisabled: false,
 }
 
 export const actionTypes = {
@@ -20,6 +21,7 @@ export const actionTypes = {
   SET_CART_ITEMS: 'SET_CART_ITEMS',
   SET_CART: 'SET_CART',
   SET_TAX_STATE: 'SET_TAX_STATE',
+  SET_IS_BILLING_SELECT_DISABLED: 'SET_IS_BILLING_SELECT_DISABLED',
 }
 
 export const reducer = (state = initialState, action) => {
@@ -44,6 +46,11 @@ export const reducer = (state = initialState, action) => {
         ...state,
         taxState: action.taxState,
       }
+    case actionTypes.SET_IS_BILLING_SELECT_DISABLED:
+      return {
+        ...state,
+        isBillingSelectDisabled: action.isBillingSelectDisabled,
+      }
     default:
       return state
   }
@@ -54,6 +61,10 @@ export const setProducts = products => ({ type: actionTypes.SET_PRODUCTS, produc
 export const setCart = cart => ({ type: actionTypes.SET_CART, cart })
 export const setCartItems = items => ({ type: actionTypes.SET_CART_ITEMS, items })
 export const updateTaxState = taxState => ({ type: actionTypes.SET_TAX_STATE, taxState })
+export const updateIsBillingSelectDisabled = disabled => ({
+  type: actionTypes.SET_IS_BILLING_SELECT_DISABLED,
+  disabled,
+})
 
 export const loadProducts = () => async (dispatch) => {
   const products = await client.get('products?include=main_images')
@@ -70,6 +81,7 @@ export const loadProducts = () => async (dispatch) => {
 
   dispatch(setProducts(data))
 }
+
 
 export const loadCart = cartId => async (dispatch) => {
   const { data } = await client.get(`carts/${cartId}`)
@@ -125,8 +137,6 @@ export const updateTaxes = (
     cartId,
     cartItems,
     taxJarResponse,
-  }).then((response) => {
-    console.log('response', response)
   }).catch((e) => {
     console.log('e', e)
   })

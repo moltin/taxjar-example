@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 class Billing extends Component {
   render() {
     const {
+      isBillingSelectDisabled,
       taxState,
       knownAddresses,
       updateAddressHandler,
@@ -33,9 +34,10 @@ class Billing extends Component {
             value={taxState}
             className="custom-select d-block w-100"
             onChange={updateAddressHandler}
+            disabled={isBillingSelectDisabled}
             id="address"
           >
-            <option key="default" value="" disabled={taxState !== undefined}>Choose an address...</option>
+            <option key="default" value="" disabled={taxState !== null}>Choose an address...</option>
             {optionItems()}
           </select>
         </div>
@@ -45,12 +47,14 @@ class Billing extends Component {
 }
 
 Billing.propTypes = {
+  isBillingSelectDisabled: PropTypes.bool.isRequired,
   taxState: PropTypes.string.isRequired,
   knownAddresses: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
   updateAddressHandler: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
+  isBillingSelectDisabled: state.isBillingSelectDisabled,
   taxState: state.taxState,
   cartItems: state.cartItems,
   cart: state.cart,
