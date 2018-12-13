@@ -5,8 +5,8 @@ import { addToCart } from '../store'
 
 class Product extends Component {
   async addToCart() {
-    const { dispatch, id, cartId } = this.props
-    dispatch(addToCart(cartId, id))
+    const { dispatch, id, tax_code, cartId } = this.props // eslint-disable-line
+    dispatch(addToCart(cartId, id, tax_code))
   }
 
   render() {
@@ -43,7 +43,6 @@ Tax Code:
     )
   }
 }
-
 
 Product.propTypes = {
   id: PropTypes.string.isRequired,

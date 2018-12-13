@@ -3,22 +3,24 @@ import { initializeStore } from '../store'
 
 const isServer = typeof window === 'undefined'
 const NEXT_REDUX_STORE = '__NEXT_REDUX_STORE__'
+const storeState = 'storeState'
 
 /* global window */
-const getOrCreateStore = (initialState) => {
+function getOrCreateStore(initialState) {
   // Always make a new store if server, otherwise state is shared between requests
   if (isServer) {
     return initializeStore(initialState)
   }
 
-  if (typeof window === 'undefined') {
-    return initializeStore(initialState)
-  }
-
   // Create store if unavailable on the client and set it on the window object
   if (!window[NEXT_REDUX_STORE]) {
-    window[NEXT_REDUX_STORE] = initializeStore(initialState)
+    let localStorageState = JSON.parse(window.localStorage.getItem(storeState))
+    window[NEXT_REDUX_STORE] = initializeStore( localStorageState ?  localStorageState : initialState)
   }
+
+  // Keep localstorage up to date with changes
+  window.localStorage.setItem(storeState, JSON.stringify(window[NEXT_REDUX_STORE].getState()))
+
   return window[NEXT_REDUX_STORE]
 }
 
