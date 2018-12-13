@@ -16,6 +16,10 @@ const fromState = process.env.FROM_STATE
 const fromCity = process.env.FROM_CITY
 const fromStreet = process.env.FROM_STREET
 
+const log = (...msg) => {
+  console.log(...msg) // eslint-disable-line no-console
+}
+
 const deleteTax = async (cartId, itemId, taxId) => { // eslint-disable-line arrow-body-style
   return client.delete(`carts/${cartId}/items/${itemId}/taxes/${taxId}`)
 }
@@ -36,7 +40,7 @@ const getExistingTaxes = async (cartId) => {
         })
       })
     } catch (e) {
-      console.log('No tax on item', item.id)
+      log('No existing tax to delete on item', item.id)
     }
   })
   return taxes
@@ -82,7 +86,7 @@ router.delete('/tax', async (req, res) => {
   for (let i = 0; i < existingTaxes.length; i += 1) {
     const tax = existingTaxes[i]
     await deleteTax(cartId, tax.itemId, tax.id) // eslint-disable-line no-await-in-loop
-    console.log('Deleted tax', tax.id)
+    log('Deleted tax', tax.id)
   }
 
   res.status(200).send({})
@@ -101,6 +105,7 @@ router.post('/calculate', async (req, res) => {
   )
 
   const taxJarResponse = await taxclient.taxForOrder(taxJarRequest)
+  log('Calculated tax order using TaxJar')
   res.status(200).send(taxJarResponse)
 })
 
@@ -121,9 +126,10 @@ router.post('/tax', async (req, res) => {
         code: cartItem.tax_code,
         rate: taxJarResponse.data.tax.rate,
       })
+      log('Created tax for item', cartItem.id)
     }
   } catch (e) {
-    console.log('No tax to apply to this cart')
+    log('No tax to apply to this cart')
   }
 
   res.status(200).send({})
