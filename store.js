@@ -3,6 +3,7 @@ import thunkMiddleware from 'redux-thunk'
 
 import axios from 'axios'
 import { client, generateUUID } from './lib/moltin'
+import axios from 'axios'
 
 const initialState = {
   cartId: null,
