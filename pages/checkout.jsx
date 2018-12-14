@@ -36,20 +36,35 @@ class CheckoutPage extends Component {
         stateLong: 'California (Los Angeles)',
         country: 'US',
         zip: '90071',
+        nexus_addresses: [{
+          country: 'US',
+          state: 'CA',
+          zip: '90001',
+        }],
       },
       NY: {
-        city: 'Mahopac',
+        city: 'New York City',
         state: 'NY',
-        stateLong: 'New York (Mahopac)',
+        stateLong: 'New York (NYC)',
         country: 'US',
-        zip: '10541',
+        zip: '10001',
+        nexus_addresses: [{
+          country: 'US',
+          state: 'NY',
+          zip: '10541',
+        }],
       },
-      WA: {
-        city: 'Spokane',
-        state: 'WA',
-        stateLong: 'Washington (Spokane)',
+      MA: {
+        city: 'Boston',
+        state: 'MA',
+        stateLong: 'Massachusetts (Boston)',
         country: 'US',
-        zip: '99201',
+        zip: '02108',
+        nexus_addresses: [{
+          country: 'US',
+          state: 'MA',
+          zip: '02180',
+        }],
       },
     }
     const {
@@ -77,6 +92,7 @@ class CheckoutPage extends Component {
           address.state,
           address.country,
           address.zip,
+          address.nexus_addresses,
           cart.id,
           cartItems,
         ),
