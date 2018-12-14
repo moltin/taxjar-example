@@ -11,12 +11,6 @@ const client = new createClient({ // eslint-disable-line new-cap
 
 const router = express.Router()
 
-const fromCountry = process.env.FROM_COUNTRY
-const fromZip = process.env.FROM_ZIP
-const fromState = process.env.FROM_STATE
-const fromCity = process.env.FROM_CITY
-const fromStreet = process.env.FROM_STREET
-
 const log = (...msg) => {
   console.log(...msg) // eslint-disable-line no-console
 }
