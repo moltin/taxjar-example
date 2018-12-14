@@ -27,8 +27,22 @@ class Billing extends Component {
     return (
       <form>
         <div className="mt-4 alert alert-primary" role="alert">
-          <p>TaxJar will verify the full address - for convenience, we have some default addresses that you can simply select.</p>
-          <p>In a real store, this will be submitted via form controls for an address.</p>
+          <p>
+            In a real store, you would be asking the customer for their
+            billing and shipping information here.
+          </p>
+          <p>
+            For convenience, we have some default addresses that you can simply select
+            which prepopoulates the TaxJar API call with a valid address.
+          </p>
+          <p>
+            It is important to note that the address you select
+            also changes the nexus address.
+            This is because collecting state tax online
+            is dependent on origin and/or destination so to simplify this example
+            we calculate the tax based on the user being sent their items from a warehouse
+            within the same state.
+          </p>
           <hr />
           <select
             value={taxState}

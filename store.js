@@ -112,7 +112,7 @@ export const loadCartItems = cartId => async (dispatch) => {
 }
 
 export const updateTaxes = (
-  city, jurisdiction, country, zip, cartId, cartItems,
+  city, jurisdiction, country, zip, nexusAddresses, cartId, cartItems,
 ) => async () => {
   // Calculate based on new jurisdiction
   const taxJarResponse = await axios.post('/api/calculate', {
@@ -120,6 +120,7 @@ export const updateTaxes = (
     jurisdiction,
     country,
     zip,
+    nexusAddresses,
     cartItems,
   }).catch((e) => {
     console.log('e', e)
