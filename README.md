@@ -1,10 +1,10 @@
 # Moltin < You > TaxJar
 
-[Moltin](https://moltin.com) provide a [flexible commerce API](https://developers.moltin.com/) that allows you to add tax to items in your cart.
+[Moltin](https://moltin.com) provides a [flexible commerce API](https://developers.moltin.com/) that allows you to add tax to items in your cart.
 
-[TaxJar](https://www.taxjar.com) provide a [sales tax API](https://www.taxjar.com/api/) for developers to get calculations for products.
+[TaxJar](https://www.taxjar.com) provides a [sales tax API](https://www.taxjar.com/api/) for developers to get calculations for products.
 
-This respository demonstrates how you can leverage both services to build a simple, flexible commerce experience with accurate tax accounting quickly.
+This repository demonstrates how you can leverage both services to build a simple, flexible commerce experience with accurate tax accounting quickly.
 
 
 ## Prerequisites
@@ -18,7 +18,7 @@ Before viewing these examples, you will need:
 
  ## Demonstration Scenario
 
-In this example project we will demostrate how to calculate sales tax via TaxJar and integrate it with your Moltin cart.
+In this example project we will demonstrate how to calculate sales tax via TaxJar and integrate it with your Moltin cart.
 
 We will use clothing as an example because the tax rules differ based on the state, city and item (pretax) cost so allows us to check different scenarios.
 
@@ -30,13 +30,13 @@ In this example we will creaste three products - one that costs exactly $110.00,
 
 ### Tax Codes
 
-TaxJars API has [an endpoint](https://developers.taxjar.com/api/reference/?javascript#categories) that describes different tax categories. As tax can different based on the _type_ of product you are selling, the categories from that endpoint need to be married with the product stored in Moltin.
+TaxJars API has [an endpoint](https://developers.taxjar.com/api/reference/?javascript#categories) that describes different tax categories. As tax can differ based on the _type_ of product you are selling, the categories from that endpoint need to be married with the product stored in Moltin.
 
 To do this, we will create [custom data](https://docs.moltin.com/advanced/custom-data) for our products which allows us to add additional fields to our products and store the TaxJar Category code so that when adding products to Moltin, you can be explicit about the tax that should be applied.
 
 ### Nexus
 
-TaxJars API has [and enpoint](https://developers.taxjar.com/api/reference/?javascript#nexus) that returns nexus information. `Nexus` is a legal term for a geographical region that you sell products in. For this example, we will be selling clothing to New York so the Nexus will be New York (as represented below from TaxJar).
+TaxJars API has [an enpoint](https://developers.taxjar.com/api/reference/?javascript#nexus) that returns nexus information. `Nexus` is a legal term for a geographical region that you sell products in. For this example, we will be selling clothing to New York so the nexus will be New York (as represented below from TaxJar).
 
 ```json
 {
