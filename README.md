@@ -26,7 +26,7 @@ For example, if you are selling in New York City then the [following applies](ht
 
  > There is no sales tax on an item of clothing or footwear that costs less than $110. An item of clothing or footwear that costs more than $110 is subject to the full 8.875% tax rate. Sales tax is calculated per item, so even if you buy two or more items that are worthmore than $110 in total, you only pay tax on the items that individually cost more than $110.
 
-In this example we will creaste three products - one that costs exactly $110.00, one that costs $110.01 and one that costs $200 to see how taxes change.
+In this example we will create three products - one that costs exactly $110.00, one that costs $110.01 and one that costs $200 to see how taxes change.
 
 ### Tax Codes
 
