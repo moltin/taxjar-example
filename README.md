@@ -11,7 +11,7 @@ This repository demonstrates how you can leverage both services to build a simpl
 
 Before viewing these examples, you will need:
 
- - A Moltin account (a [30 day trial](https://dashboard.moltin.com/signup) is available).
+ - A Moltin account (a [trial](https://www.moltin.com/trial-request) is available upon request).
  - A TaxJar account (a [30 day trial](https://app.taxjar.com/api_sign_up) is available).
  - Some products to demonstrate ([see below](#demonstration-scenario))`.
 
